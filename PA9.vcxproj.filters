@@ -23,5 +23,6 @@
     <None Include=".gitignore">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
