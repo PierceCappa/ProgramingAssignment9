@@ -103,11 +103,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LoadState.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="PA9Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="BoardNode.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="LoadState.h" />
+    <ClInclude Include="MainMenuState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
