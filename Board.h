@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-
+//for all inputs, the x coordinate needs to be between a-f and the y needs to be 0-9
 
 class Board
 {
