@@ -103,6 +103,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
     <ClCompile Include="LoadState.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="PA9Main.cpp" />

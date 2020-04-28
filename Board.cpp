@@ -1,3 +1,4 @@
+
 #include "Board.h"
 
 Board::Board()
@@ -335,3 +336,4 @@ int convertCharCoordinate(char character)
 {
 	return character - 'a';
 }
+
