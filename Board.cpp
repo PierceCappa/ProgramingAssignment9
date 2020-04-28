@@ -2,56 +2,28 @@
 
 Board::Board()
 {
-	topRightCornor = new BoardNode;
-	boardCreatorLoop(topRightCornor, 0);
+	
+	boardCreatorLoop();
 	placeShips();
 }
 
-void Board::boardCreatorLoop(BoardNode* currentRow, int row)
+void Board::boardCreatorLoop()
 {
-	if (row < 10)
+	for (int x = 0; x < 10; x++)
 	{
-		
-		rowCreatorLoop(currentRow, 0);
-		int nextRow = row;
-		nextRow++;
-		BoardNode* previousRow = findRow(row);
-		BoardNode* newNode = new BoardNode;
-		previousRow->setSpaceBelow(newNode);
-		boardCreatorLoop(previousRow-> getSpaceBelow(), nextRow);
+		for (int y = 0; y < 10; y++)
+		{
+			board[x][y] = 0;
+		}
 	}
 }
 
-void Board::rowCreatorLoop(BoardNode*& currentNode, int member)
-{
-	if (member < 10)
-	{
-		BoardNode* newNode = new BoardNode;
-		currentNode->setSpaceRight(newNode);
-		currentNode = currentNode->getSpaceRight();
-		rowCreatorLoop(currentNode, member += 1);
-	}
-}
 
-BoardNode* Board::findRow(int Y)
-{
-	BoardNode* currentNode = topRightCornor;
-	for (int i = 0; i < Y; i++)
-	{
-		currentNode = currentNode->getSpaceBelow();
-	}
-	return currentNode;
-}
+
 
 Board::~Board()
 {
-	for (int y = 9; y > -1; y--)
-	{
-		for (char x = 'j'; x >= 'a'; x--)
-		{
-			free(findSpace(x, y));
-		}
-	}
+	
 }
 
 void Board::displayBoardTerminal()
@@ -70,23 +42,14 @@ void Board::displayBoardTerminal()
 		cout << y << "	";
 		for (x; x < 'k'; x++)
 		{
-			cout << findSpace(x, y)->getState() << "	";
+			cout << board[convertCharCoordinate(x)][y] << "	";
 		}
 		x = 'a';
 		cout << endl;
 	}
 }
 
-BoardNode* Board::findSpace(char x, int y)
-{
-	BoardNode* currentNode = findRow(y);
-	int X = x - 'a';
-	for (int i = 0; i < X; i++)
-	{
-		currentNode = currentNode->getSpaceRight();
-	}
-	return currentNode;
-}
+
 
 void Board::placeShips()
 {
@@ -181,28 +144,28 @@ void Board::placeShip(char x, int y, int changeX, int changeY, int size, int shi
 		cY *= i;
 		if (ship == 1)
 		{
-			carrier[i] = findSpace(pX + cX, pY + cY);
-			carrier[i]->setState(2);
+			carrier[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			*carrier[i] = 2;
 		}
 		if (ship == 2)
 		{
-			battleShip[i] = findSpace(pX + cX, pY + cY);
-			battleShip[i]->setState(2);
+			battleShip[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			*battleShip[i] = 2;
 		}
 		if (ship == 3)
 		{
-			cruiser[i] = findSpace(pX + cX, pY + cY);
-			cruiser[i]->setState(2);
+			cruiser[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			*cruiser[i] = 2;
 		}
 		if (ship == 4)
 		{
-			submarine[i] = findSpace(pX + cX, pY + cY);
-			submarine[i]->setState(2);
+			submarine[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			*submarine[i] = 2;
 		}
 		if (ship == 5)
 		{
-			destroyer[i] = findSpace(pX + cX, pY + cY);
-			destroyer[i]->setState(2);
+			destroyer[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			*destroyer[i] = 2;
 		}
 	}
 
@@ -215,7 +178,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	right = true;
 	down = true;
 	left = true;
-	if (findSpace(x, y)->getState() != 0)
+	if (board[convertCharCoordinate(x)][y] != 0)
 	{
 		return 0;
 	}
@@ -223,7 +186,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (findSpace(x - i, y)->getState() != 0)
+			if (board[convertCharCoordinate(x)][y] != 0)
 			{
 				left = false;
 			}
@@ -237,7 +200,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (findSpace(x + i, y)->getState() != 0)
+			if (board[convertCharCoordinate(x)][y] != 0)
 			{
 				right = false;
 			}
@@ -251,7 +214,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (findSpace(x, y - i)->getState() != 0)
+			if (board[convertCharCoordinate(x)][y] != 0)
 			{
 				up = false;
 			}
@@ -265,7 +228,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (findSpace(x, y + i)->getState() != 0)
+			if (board[convertCharCoordinate(x)][y] != 0)
 			{
 				down = false;
 			}
@@ -307,13 +270,13 @@ int Board::checkIfSpaceHasShip(char x, int y)
 	}
 }
 
-int Board::cISHSLoop(char x, int y, BoardNode** arr, int size)
+int Board::cISHSLoop(char x, int y, int** arr, int size)
 {
 	for (int i = 0; i < size; i++)
 	{
-		if (arr[i] == findSpace(x,y))
+		if (*arr[i] == board[x][y])
 		{
-			return arr[i]->getState();
+			return *arr[i];
 		}
 	}
 	return 0;
@@ -324,11 +287,11 @@ int Board::checkHit(char x, int y)
 	int ship = checkIfSpaceHasShip(x, y);
 	if (ship != 0)
 	{
-		findSpace(x, y)->setState(4);
+		board[convertCharCoordinate(x)][y] = 4;
 	}
 	else
 	{
-		findSpace(x, y)->setState(2);
+		board[convertCharCoordinate(x)][y] = 2;
 	}
 	return ship;
 }
@@ -338,32 +301,37 @@ bool Board::checkIfLost()
 	
 	for (int i = 0; i < 5; i++)
 	{
-		if (carrier[i]->getState() == 2)
+		if (*carrier[i] == 2)
 		{
 			return false;
 		}
 	}
 	for (int i = 0; i < 4; i++)
 	{
-		if (battleShip[i]->getState() == 2)
+		if (*battleShip[i]== 2)
 		{
 			return false;
 		}
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		if (cruiser[i]->getState() == 2 || submarine[i]->getState() == 2)
+		if (*cruiser[i] == 2 || *submarine[i] == 2)
 		{
 			return false;
 		}
 	}
 	for (int i = 0; i < 2; i++)
 	{
-		if (destroyer[i]->getState() == 2)
+		if (*destroyer[i] == 2)
 		{
 			return false;
 		}
 	}
 
 	return true;
+}
+
+int convertCharCoordinate(char character)
+{
+	return character - 'a';
 }

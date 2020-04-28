@@ -3,19 +3,20 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#include "BoardNode.h"
+
 
 class Board: public BoardNode
 {
 protected:
-	// this pionter points to the space at a,0: and is the top right cornor
-	BoardNode* topRightCornor;
+	// this array contains the board
+	//if state = 0, space is empty, state = 1, space is empty and other player has shot a round there, state = 2 player has a ship piece there, state  = 3 player has a ship there that has been hit
+	int board[10][10];
 	//these arrays are arrays containing the spaces where the ship would normally be.
-	BoardNode* carrier[5];//this is boat 1
-	BoardNode* battleShip[4]; //this is boat 2
-	BoardNode* cruiser[3];//this is boat 3
-	BoardNode* submarine[3];//this is boat 4
-	BoardNode* destroyer[2];//this is boat 5
+	int* carrier[5];//this is boat 1
+	int* battleShip[4]; //this is boat 2
+	int* cruiser[3];//this is boat 3
+	int* submarine[3];//this is boat 4
+	int* destroyer[2];//this is boat 5
 	
 
 public:
@@ -26,13 +27,16 @@ public:
 	~Board();
 	//this function creates the board by passing the begening of the row to rowCreatorLoop, and then calling this function by passing the head of the next row down and row++;
 	//the recursive function stops once row = 10
-	void boardCreatorLoop(BoardNode* currentRow, int row);
+	void boardCreatorLoop();
+
+	
+
 	//this function creates a row of the board
 	void rowCreatorLoop(BoardNode*& currentNode, int member);
 	//this function finds a space specified by the x and y, y is passed into the find row function, then the fucntion finds that specific node and returns it
-	BoardNode* findSpace(char x, int y);
+	int* findSpace(char x, int y);
 	//this function finds a row of the board given the y and returns that node
-	BoardNode* findRow(int Y);
+
 	//this function goes through each of the arrays of boats and makes sure all of them are not at 3, if all are 3 than the function returns true, else if at least one boats space is 2 returns false
 	bool checkIfLost();
 	// goes to that spot x and y and checks to see it a hit was made then calls set state for that boardNode. if a hit was made the space is changed to 3, if a miss the spot is changed to 1
@@ -54,9 +58,10 @@ public:
 	//this function checks if a node has a ship on it, if a ship is present it returns the number of the ship, else  is the space does not have a ship 0 is returned
 	int checkIfSpaceHasShip(char x, int y);
 	//this function is called by check if space Has ship and is a recursive funciton
-	int cISHSLoop(char x, int y, BoardNode** arr, int size);
+	int cISHSLoop(char x, int y, int** arr, int size);
 
-	
 };
+
+int convertCharCoordinate(char character);
 
 #endif
