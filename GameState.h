@@ -3,6 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <vector>
+#include <string>
+
+using namespace std;
 
 enum class States
 {
@@ -21,7 +24,7 @@ class GameState
 {
 public:
 	// Call this when switching to this state from another state.
-	virtual void onSwitch(std::vector<SwitchFlags>& flags) = 0;
+	virtual void onSwitch(vector<SwitchFlags>& flags) = 0;
 
 	// Call this when drawing the contents of the state
 	virtual void draw(sf::RenderWindow& window) = 0;
@@ -29,5 +32,5 @@ public:
 	// Call this when updating game logic in the state
 	// and return which state to switch to
 	// o_flags is an outut parameter
-	virtual States update(std::vector<sf::Event>& events, std::vector<SwitchFlags>& o_flags) = 0;
+	virtual States update(vector<sf::Event>& events, vector<SwitchFlags>& o_flags) = 0;
 };
