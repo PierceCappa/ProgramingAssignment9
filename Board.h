@@ -5,7 +5,7 @@
 using namespace std;
 
 
-class Board: public BoardNode
+class Board
 {
 protected:
 	// this array contains the board
@@ -31,8 +31,7 @@ public:
 
 	
 
-	//this function creates a row of the board
-	void rowCreatorLoop(BoardNode*& currentNode, int member);
+
 	//this function finds a space specified by the x and y, y is passed into the find row function, then the fucntion finds that specific node and returns it
 	int* findSpace(char x, int y);
 	//this function finds a row of the board given the y and returns that node

@@ -28,7 +28,7 @@ Board::~Board()
 
 void Board::displayBoardTerminal()
 {
-	BoardNode* currentNode;
+
 	char x = 'a';
 	cout << "	";
 	for (x; x < 'k'; x++)
