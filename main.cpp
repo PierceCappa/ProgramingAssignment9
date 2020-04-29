@@ -26,16 +26,19 @@ int main()
 #include <SFML/Window.hpp>
 #include <conio.h>
 #include "MainMenuState.h"
+#include "PlayState.h"
 #include "GameState.h"
 #include "Board.h"
 
-using namespace sf;
+using sf::RenderWindow;
+using sf::Event;
+using sf::VideoMode;
 
 int main()
 {
 	// Initialize the states.
 	MainMenuState menuState;
-	MainMenuState rules;
+	PlayState playState;
 	GameState* currentState = &menuState;
 
 	// create the window.
@@ -125,6 +128,10 @@ int main()
 		case (States::MAIN_MENU):
 			currentState = &menuState;
 			break;
+		case (States::PLAY):
+			currentState = &playState;
+			break;
+
 		default:
 			std::cout << "Unimplemented state enum!" << std::endl;
 		case (States::NO_CHANGE):

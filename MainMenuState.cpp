@@ -137,6 +137,7 @@ States MainMenuState::update(std::vector<sf::Event>& events)
 		{
 			//if play, the game will begin
 		case PLAY:
+			return States::PLAY;
 			break;
 			//if rules, the rules will be displayed
 		case RULES:

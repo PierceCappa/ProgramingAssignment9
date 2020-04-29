@@ -2,11 +2,23 @@
 #include "GameState.h"
 #include "iostream"
 
-#define PLAY 0
-#define RULES 1
-#define EXIT 2
+enum {
+	PLAY,
+	RULES,
+	EXIT
+};
 
-using namespace sf;
+//using namespace sf;
+
+using sf::Font;
+using sf::Text;
+using sf::RectangleShape;
+using sf::Event;
+using sf::RenderWindow;
+using sf::Color;
+using sf::Vector2f;
+using sf::Keyboard;
+
 
 class MainMenuState :
 	public GameState
