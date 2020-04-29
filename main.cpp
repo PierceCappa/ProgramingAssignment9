@@ -1,47 +1,62 @@
 // comment or uncomment the following line to enable test mode
-// #define TESTING
+//#define TESTING
 
 #if defined(TESTING)
-#include "Test.h"
+#include "test.h"
 
 int main()
 {
-
-	return 0;
+	return testing::run();
 }
 
 #else
+
+// Please do not edit the main file unless you are changing 
+// code that will be executed every frame!
+//
+// Most game logic should be written in GameState 
+// update() code or draw() code.
+// Please consult Cody if you don't understand this.
+
+// TODO:
+// implement framerate control.
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <conio.h>
 #include "MainMenuState.h"
-#include "LoadState.h"
 #include "GameState.h"
 #include "Board.h"
-
 
 using namespace sf;
 
 int main()
 {
-	LoadState loadState;
+	// Initialize the states.
 	MainMenuState menuState;
-	GameState* currentState = &loadState;
 	MainMenuState rules;
+	GameState* currentState = &menuState;
 
+	// create the window.
 	RenderWindow window(VideoMode(800, 800), "My Window");
 	window.setVerticalSyncEnabled(true);     
-
-	int k;
 
 	while (window.isOpen())
 	{
 		Event event;
 		std::vector<Event> events;
-		std::vector<SwitchFlags> switchFlags;
 
+		/// EXPLANATION
+		/*
+		The window here is taking all events and inserting them into a vector.
+		It will later pass that vector of events to the gamestate being called.
+		Code to handle events should thus be written in the gamestate update code.
+		Any event handling done in this loop is captured by the window before
+		the state is called, overriding it. (e.g, clicking the x and triggering
+		Event::Closed will always close the window regardless of what the 
+		current gamestate wants.)
+		*/
 		while (window.pollEvent(event))
 		{
 			// if user closes the window, close the window
@@ -49,98 +64,64 @@ int main()
 			{
 				window.close();
 			}
-			// if user presses a key in the main menu
-			else if (event.type == Event::KeyPressed)
-			{
-				// if user presses the down or up arrow,  change the value of the selector's position (grey box)
-				//	0 for play, 1 for rules and 2 for exit
-				if (Keyboard::isKeyPressed(Keyboard::Down) && menuState.selectorpos < 2)
-					++menuState.selectorpos; 
-				if (Keyboard::isKeyPressed(Keyboard::Up) && menuState.selectorpos >= 0)
-					--menuState.selectorpos;
-			}
-			// not entirely sure what this does
+			// this inserts the event into the event vector, to be sent to the state.
 			else 
 			{
 				events.push_back(event);
 			}      
 		}
-		//  changes where the selector is drawn in the window as well as the size to fit around the words
-		switch (menuState.selectorpos)
-		{
-		case PLAY:
-			menuState.selector.setPosition(Vector2f(10, 165));
-			menuState.selector.setSize(Vector2f(105, 55));
-			break;
-		case RULES:
-			menuState.selector.setPosition(Vector2f(10, 222));
-			menuState.selector.setSize(Vector2f(130, 55));
-			break;
-		case EXIT:
-			menuState.selector.setPosition(Vector2f(10, 279));
-			menuState.selector.setSize(Vector2f(105, 55));
-			break;
-		}
+		
+		/// EXPLANATION
+		/*
+		What the program is doing at any given time (showing the main menu, showing the actual game, etc.)
+		will be represented by states that inherit the GameState class.
 
-		// update game logic
-		auto nextStateEnum = currentState->update(events, switchFlags);
+		This allows the program to compartmentalize various game states and not have to write
+		a labyrinth of switch statements.
 
-		// if enter is pressed it will go through the switch to find what the user selected using the selectorpos
-		if (Keyboard::isKeyPressed(Keyboard::Enter))
-		{
-			switch (menuState.selectorpos)
-			{
-				//if play, the game will begin
-			case PLAY:
-				break;
-				//if rules, the rules will be displayed
-			case RULES:
-				// clear before draw
-				window.clear(Color(0, 20, 40, 255));
-				
-				//draw rules
-				menuState.rules(window);
+		Please add all actual game logic to an appropriate state. that code will be called here.
 
-				//display
-				window.display();
+		nextStateEnum is an integer flag that just tells us what state to load next.
 
-				while (!Keyboard::isKeyPressed(Keyboard::Escape))
-				{
-					if (event.type == Event::Closed)
-					{
-						window.close();
-					}
-				}
+		Also, *do not write any code that assumes access to the window in game logic*. 
+		*/
+		auto nextStateEnum = currentState->update(events);
+		
+		//////////////
+		//// DRAW ////
+		//////////////
 
-				break;
-				//if exit, the program will end and the window will close
-			case EXIT:
-				exit(0);
-			}
-		}
-		else
-		{
-			//////////////
-			//// DRAW ////
-			//////////////
+		// clear before draw
+		window.clear(Color(0, 20, 40, 255));
 
-			// clear before draw
-			window.clear(Color(0, 20, 40, 255));
+		// EXPLANATION
+		/*
+		This is the same as the update block above, but with draw.
+		any code that actually interact with the game window and renders to it should be called
+		in the draw(window) function of the appropriate gamestate.
+		*/
+		currentState->draw(window);
 
-			// draw calls
-			currentState->draw(window);
-
-			// finally, show the frame
-			window.display();
-		}
+		// swaps the display buffer, putting everything that was drawn on the screen.
+		window.display();
 		// After doing all that, change state if necessary
 
+
+		// EXPLANATION
+		/*
+		The gamestate is changed here based on what is returned by the
+		update function of the current gamestate.
+
+		You may edit this section to add new gamestates if deemed necessary,
+		making sure to also add an appropriate enum for the state in GameState.h
+
+		States::NO_CHANGE and States::QUIT are special values that do not correspond
+		to a particular state, but instead tell the program to keep the current state,
+		or exit entirely, respectively.
+		*/
 		bool switching = true;
 		switch (nextStateEnum)
 		{
-		case (States::LOAD):
-			currentState = &loadState;
-			break;
 		case (States::MAIN_MENU):
 			currentState = &menuState;
 			break;
@@ -149,10 +130,15 @@ int main()
 		case (States::NO_CHANGE):
 			switching = false;
 			break;
+		case (States::QUIT):
+			switching = false;
+			window.close();
+			break;
 		}
+		// If the gamestate is changed, onSwitch() is called 
 		if (switching)
 		{
-			currentState->onSwitch(switchFlags);
+			currentState->onSwitch();
 		}
 	}
 	return 0;
