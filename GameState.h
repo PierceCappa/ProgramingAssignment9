@@ -13,6 +13,7 @@ enum class States
 {
 	NO_CHANGE, 
 	MAIN_MENU,
+	PLAY,
 	QUIT
 };
 
