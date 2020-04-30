@@ -2,9 +2,10 @@
 
 Board::Board()
 {
-	
+	x = 0; y = 0;
 	boardCreatorLoop();
-	placeShips();
+	
+
 }
 
 void Board::boardCreatorLoop()
@@ -26,111 +27,161 @@ Board::~Board()
 	
 }
 
-void Board::displayBoardTerminal()
+void shipPlaceReset(int& x, int& y, int& size, string& shipName, int& ship, int count)
 {
-
-	char x = 'a';
-	cout << "	";
-	for (x; x < 'k'; x++)
+	if (count == 0)
 	{
-		cout << x << "	";
+		size = 5;
+		shipName = "Carrier";
+		ship = 1;
+		x = 0;
+		y = 0;
 	}
-	cout << endl;
-	x = 'a';
-	for (int y = 0; y < 10; y++)
+	else if (count == 1)
 	{
-		cout << y << "	";
-		for (x; x < 'k'; x++)
-		{
-			cout << board[convertCharCoordinate(x)][y] << "	";
-		}
-		x = 'a';
-		cout << endl;
+		size = 4;
+		shipName = "BattleShip";
+		ship = 2;
+		x = 0;
+		y = 0;
+	}
+	else if (count == 2)
+	{
+		size = 3;
+		shipName = "Cruiser";
+		ship = 3;
+		x = 0;
+		y = 0;
+	}
+	else if (count == 3)
+	{
+		size = 3;
+		shipName = "Submarine";
+		ship = 4;
+		x = 0;
+		y = 0;
+	}
+	else if (count == 4)
+	{
+		size = 2;
+		shipName = "Destroyer";
+		ship = 5;
+		x = 0;
+		y = 0;
 	}
 }
-
-
 
 void Board::placeShips()
 {
 
-	displayBoardTerminal();
-	check(5, "carrier", 1);
-	displayBoardTerminal();
-	check(4, "BattleShip", 2);
-	displayBoardTerminal();
-	check(3, "Cruiser", 3);
-	displayBoardTerminal();
-	check(3, "Submarine", 4);
-	displayBoardTerminal();
-	check(2, "Destroyer", 5);
-}
-
-void Board::check(int size, string shipName, int ship)
-{
-	bool place = true;
 	bool up, right, down, left;
-	while (place == true)
+	int count = 0;
+	int size;
+	int part;
+	string shipName;
+	int ship;
+	GameMenu gameInstructions;
+	sf::RenderWindow window(sf::VideoMode(800, 900), "BattleShip");
+	part = 0;
+	shipPlaceReset(x, y, size, shipName, ship, count);
+	while (window.isOpen())
 	{
-		char x;
-		int y;
-		int input;
-		cout << "where would you like to place the front of your " << shipName << ": size " << size << "(enter a letter a for your x and a number for y)" << endl;
-		cin >> x;
-		cin >> y;
-		if (x >= 'a' && x <= 'j' && y >= 0 && y <= 9)
+		sf::Event event;
+		std::vector<Event> events;
+		std::vector<SwitchFlags> switchFlags;
+		if (count == 5)
 		{
-			if (checkIfSpaceForShip(size, up, right, down, left, x, y) == true)
+			window.close();
+		}
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
 			{
-				if (up == true)
+				window.close();
+			}
+			else if (event.type == Event::KeyPressed)
+			{
+				if (part == 0)
 				{
-					cout << "enter 1 to angle the ship up" << endl;
+					getUserInput(event);
+					if (checkIfSpaceForShip(size, up, right, down, left, x, y) == true && Keyboard::isKeyPressed(Keyboard::Enter))
+					{
+						cout << up << "	" << down << "	" << right << "	" << left << endl;
+						part++;
+					}
 				}
-				if (down == true)
+				else
 				{
-					cout << "enter 2 to angle the ship down" << endl;
-				}
-				if (left == true)
-				{
-					cout << "enter 3 to angle the ship left" << endl;
-				}
-				if (right == true)
-				{
-					cout << "enter 4 to angle the ship right" << endl;
-				}
 
-				cin >> input;
-				if (input == 1 && up == true)
-				{
-					placeShip(x, y, 0, -1, size, ship);
-					place = false;
-				}
-				else if (input == 2 && down == true)
-				{
-					placeShip(x, y, 0, 1, size, ship);
-					place = false;
-				}
-				else if (input == 3 && left == true)
-				{
-					placeShip(x, y, -1, 0, size, ship);
-					place = false;
-				}
-				else if (input == 4 && right == true)
-				{
-					placeShip(x, y, 1, 0, size, ship);
-					place = false;
+					if (Keyboard::isKeyPressed(Keyboard::Up) && up == true)
+					{
+						placeShip(x, y, 0, -1, size, ship);
+						count++;
+						shipPlaceReset(x, y, size, shipName, ship, count);
+						part--;
+					}
+					else if (Keyboard::isKeyPressed(Keyboard::Down) && down == true)
+					{
+						placeShip(x, y, 0, 1, size, ship);
+						count++;
+						shipPlaceReset(x, y, size, shipName, ship, count);
+						part--;
+					}
+					else if (Keyboard::isKeyPressed(Keyboard::Left) && left == true)
+					{
+						placeShip(x, y, -1, 0, size, ship);
+						count++;
+						shipPlaceReset(x, y, size, shipName, ship, count);
+						part--;
+					}
+					else if (Keyboard::isKeyPressed(Keyboard::Right) && right == true)
+					{
+						placeShip(x, y, 1, 0, size, ship);
+						count++;
+						shipPlaceReset(x, y, size, shipName, ship, count);
+						part--;
+					}
+
+
 				}
 			}
 			else
-				cout << "invalid location, there is no room for this ship there" << endl;
+			{
+				events.push_back(event);
+			}
 		}
-		else
-			cout << "this location does not exist try again" << endl;
+		
+		window.clear();
+		drawBoard(window);
+		gameInstructions.placingShips(window, shipName, size);
+		window.display();
 	}
+	x = 100;
+	y = 100;
 }
+
+void Board::getUserInput(Event &event)
+{
+	 
+			
+		 if (Keyboard::isKeyPressed(Keyboard::Up) && y > 0)
+			 y--;
+		 else if (Keyboard::isKeyPressed(Keyboard::Down) && y < 9)
+			 y++;
+		 if (Keyboard::isKeyPressed(Keyboard::Left) && x > 0)
+			 x--;
+		 else if (Keyboard::isKeyPressed(Keyboard::Right) && x < 9)
+			 x++;
+
+		 cout << x << "	" << y << endl;
+
+}
+
+
 
 void Board::placeShip(char x, int y, int changeX, int changeY, int size, int ship)
 {
+	cout << "placing ship" << endl;
 	int cX, cY;
 	char pX;
 	int pY;
@@ -144,27 +195,27 @@ void Board::placeShip(char x, int y, int changeX, int changeY, int size, int shi
 		cY *= i;
 		if (ship == 1)
 		{
-			carrier[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			carrier[i] = &board[pX + cX][pY + cY];
 			*carrier[i] = 2;
 		}
 		if (ship == 2)
 		{
-			battleShip[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			battleShip[i] = &board[pX + cX][pY + cY];
 			*battleShip[i] = 2;
 		}
 		if (ship == 3)
 		{
-			cruiser[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			cruiser[i] = &board[pX + cX][pY + cY];
 			*cruiser[i] = 2;
 		}
 		if (ship == 4)
 		{
-			submarine[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			submarine[i] = &board[pX + cX][pY + cY];
 			*submarine[i] = 2;
 		}
 		if (ship == 5)
 		{
-			destroyer[i] = &board[convertCharCoordinate(pX + cX)][pY + cY];
+			destroyer[i] = &board[pX + cX][pY + cY];
 			*destroyer[i] = 2;
 		}
 	}
@@ -178,15 +229,15 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	right = true;
 	down = true;
 	left = true;
-	if (board[convertCharCoordinate(x)][y] != 0)
+	if (board[x][y] != 0)
 	{
-		return 0;
+		return false;
 	}
-	if (x - size >= 'a')
+	if (x - size >= 0)
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (board[convertCharCoordinate(x)][y] != 0)
+			if (board[x-i][y] != 0)
 			{
 				left = false;
 			}
@@ -196,11 +247,11 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		left = false;	
 	}
-	if (x + size <= 'j')
+	if (x + size <= 9)
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (board[convertCharCoordinate(x)][y] != 0)
+			if (board[x+i][y] != 0)
 			{
 				right = false;
 			}
@@ -214,7 +265,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (board[convertCharCoordinate(x)][y] != 0)
+			if (board[x][y-i] != 0)
 			{
 				up = false;
 			}
@@ -228,7 +279,7 @@ bool Board::checkIfSpaceForShip(int size, bool& up, bool& right, bool& down, boo
 	{
 		for (int i = 0; i < size; i++)
 		{
-			if (board[convertCharCoordinate(x)][y] != 0)
+			if (board[x][y+i] != 0)
 			{
 				down = false;
 			}
@@ -287,11 +338,11 @@ int Board::checkHit(char x, int y)
 	int ship = checkIfSpaceHasShip(x, y);
 	if (ship != 0)
 	{
-		board[convertCharCoordinate(x)][y] = 4;
+		board[x][y] = 3;
 	}
 	else
 	{
-		board[convertCharCoordinate(x)][y] = 2;
+		board[x][y] = 1;
 	}
 	return ship;
 }
@@ -334,4 +385,77 @@ bool Board::checkIfLost()
 int convertCharCoordinate(char character)
 {
 	return character - 'a';
+}
+
+int getUserInputShipDirection()
+{
+	return 1;
+}
+
+void Board::drawBoard(RenderWindow& window)
+
+{
+	sf::RectangleShape grid[10][10];
+	sf::Vector2f cellSize(squareSize, squareSize);
+	for (int i = 0; i < boardSize; i++) {
+		for (int j = 0; j < boardSize; j++) {
+
+			grid[i][j].setSize(cellSize);
+			if (x == i && y == j)
+			{
+				grid[i][j].setOutlineColor(sf::Color::Magenta);
+			}
+			else
+			{
+				grid[i][j].setOutlineColor(sf::Color::Blue);
+			}
+
+			grid[i][j].setOutlineThickness(5.0f);
+			if (board[i][j] == 1)
+			{
+				grid[i][j].setFillColor(sf::Color::Cyan);
+			}
+			else if (board[i][j] == 2)
+			{
+				grid[i][j].setFillColor(sf::Color::Black);
+			}
+			else if (board[i][j] == 3)
+			{
+				grid[i][j].setFillColor(sf::Color::Red);
+			}
+			else
+			{
+				grid[i][j].setFillColor(sf::Color::White);
+			}
+			grid[i][j].setPosition(i * cellSize.x + 10.0f, j * cellSize.y + 210.0f);
+			window.draw(grid[i][j]);
+		}
+	}
+}
+
+
+void Board::moveX(int X)
+{
+	x += X;
+}
+
+void Board::moveY(int Y)
+{
+	y += Y;
+}
+
+void Board::setXY()
+{
+	x = 0;
+	y = 0;
+}
+
+int Board::getX()
+{
+	return x;
+}
+
+int Board::getY()
+{
+	return y;
 }
