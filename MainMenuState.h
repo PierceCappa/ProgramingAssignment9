@@ -23,7 +23,8 @@ using sf::Keyboard;
 class MainMenuState :
 	public GameState
 {
-private:
+	// i changed this to protected so that my GameMenu class works - pierce
+protected:
 	Font font;
 	Text title;
 	Text menu;

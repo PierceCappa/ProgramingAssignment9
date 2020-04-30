@@ -29,6 +29,8 @@ int main()
 #include "PlayState.h"
 #include "GameState.h"
 #include "Board.h"
+#include "BoardAI.h"
+#include "GameLoop.h"
 
 using sf::RenderWindow;
 using sf::Event;
