@@ -81,14 +81,14 @@ void Board::placeShips()
 	string shipName;
 	int ship;
 	GameMenu gameInstructions;
-	sf::RenderWindow window(sf::VideoMode(800, 900), "BattleShip");
+	sf::RenderWindow window(sf::VideoMode(800, 1000), "BattleShip");
 	part = 0;
 	shipPlaceReset(x, y, size, shipName, ship, count);
 	while (window.isOpen())
 	{
 		sf::Event event;
 		std::vector<Event> events;
-		std::vector<SwitchFlags> switchFlags;
+		//std::vector<SwitchFlags> switchFlags;
 		if (count == 5)
 		{
 			window.close();
