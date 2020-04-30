@@ -4,11 +4,6 @@
 #include "GameMenu.h"
 #include "iostream"
 
-
-#define PLAY 0
-#define RULES 1
-#define EXIT 2
-
 using namespace sf;
 
 //for all inputs, the x coordinate needs to be between a-f and the y needs to be 0-9
@@ -61,7 +56,7 @@ public:
 	//void displayBoardTerminal();
 	//this function goes through each of the ship pointer arrays, asking for user input to decide where to put them.
 	//this function calls displayBoardTerminal and check 5 times for each ship. passes name of ship, and size of ship as well as ship number to check
-	void placeShips();
+	void placeShips(sf::RenderWindow& window);
 	//this function asks for the starting place of a place you whould like to put the ship, than calls checkIfSpaceForShip
 	//this function then gives the user the options for the direction of the ship, and then places the ship based on user input
 	void check(int size, char* shipName, int ship);

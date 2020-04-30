@@ -5,11 +5,6 @@
 #include "Board.h"
 #include "iostream"
 
-
-#define PLAY 0
-#define RULES 1
-#define EXIT 2
-
 class BoardAI : public Board
 {
 public:

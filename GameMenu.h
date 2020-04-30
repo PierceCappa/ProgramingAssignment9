@@ -4,10 +4,6 @@
 #include "iostream"
 #include "MainMenuState.h"
 
-#define PLAY 0
-#define RULES 1
-#define EXIT 2
-
 using namespace sf;
 
 //this class inherits from MainMenuState and is used for the 

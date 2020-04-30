@@ -71,7 +71,7 @@ void shipPlaceReset(int& x, int& y, int& size, string& shipName, int& ship, int 
 	}
 }
 
-void Board::placeShips()
+void Board::placeShips(sf::RenderWindow& window)
 {
 
 	bool up, right, down, left;
@@ -81,80 +81,77 @@ void Board::placeShips()
 	string shipName;
 	int ship;
 	GameMenu gameInstructions;
-	sf::RenderWindow window(sf::VideoMode(800, 1000), "BattleShip");
 	part = 0;
 	shipPlaceReset(x, y, size, shipName, ship, count);
-	while (window.isOpen())
+	bool done = false;
+	while (window.isOpen() && !done)
 	{
-		sf::Event event;
-		std::vector<Event> events;
-		//std::vector<SwitchFlags> switchFlags;
 		if (count == 5)
 		{
-			window.close();
+			done = true;
 		}
-		while (window.pollEvent(event))
+		else
 		{
-			if (event.type == sf::Event::Closed)
+			sf::Event event;
+			while (window.pollEvent(event))
 			{
-				window.close();
-			}
-			else if (event.type == Event::KeyPressed)
-			{
-				if (part == 0)
+				if (event.type == sf::Event::Closed)
 				{
-					getUserInput(event);
-					if (checkIfSpaceForShip(size, up, right, down, left, x, y) == true && Keyboard::isKeyPressed(Keyboard::Enter))
+					window.close();
+				}
+				else if (event.type == Event::KeyPressed)
+				{
+					if (part == 0)
 					{
-						cout << up << "	" << down << "	" << right << "	" << left << endl;
-						part++;
+						getUserInput(event);
+						if (checkIfSpaceForShip(size, up, right, down, left, x, y) == true && Keyboard::isKeyPressed(Keyboard::Enter))
+						{
+							cout << up << "	" << down << "	" << right << "	" << left << endl;
+							part++;
+						}
+					}
+					else
+					{
+
+						if (Keyboard::isKeyPressed(Keyboard::Up) && up == true)
+						{
+							placeShip(x, y, 0, -1, size, ship);
+							count++;
+							shipPlaceReset(x, y, size, shipName, ship, count);
+							part--;
+						}
+						else if (Keyboard::isKeyPressed(Keyboard::Down) && down == true)
+						{
+							placeShip(x, y, 0, 1, size, ship);
+							count++;
+							shipPlaceReset(x, y, size, shipName, ship, count);
+							part--;
+						}
+						else if (Keyboard::isKeyPressed(Keyboard::Left) && left == true)
+						{
+							placeShip(x, y, -1, 0, size, ship);
+							count++;
+							shipPlaceReset(x, y, size, shipName, ship, count);
+							part--;
+						}
+						else if (Keyboard::isKeyPressed(Keyboard::Right) && right == true)
+						{
+							placeShip(x, y, 1, 0, size, ship);
+							count++;
+							shipPlaceReset(x, y, size, shipName, ship, count);
+							part--;
+						}
+
+
 					}
 				}
-				else
-				{
-
-					if (Keyboard::isKeyPressed(Keyboard::Up) && up == true)
-					{
-						placeShip(x, y, 0, -1, size, ship);
-						count++;
-						shipPlaceReset(x, y, size, shipName, ship, count);
-						part--;
-					}
-					else if (Keyboard::isKeyPressed(Keyboard::Down) && down == true)
-					{
-						placeShip(x, y, 0, 1, size, ship);
-						count++;
-						shipPlaceReset(x, y, size, shipName, ship, count);
-						part--;
-					}
-					else if (Keyboard::isKeyPressed(Keyboard::Left) && left == true)
-					{
-						placeShip(x, y, -1, 0, size, ship);
-						count++;
-						shipPlaceReset(x, y, size, shipName, ship, count);
-						part--;
-					}
-					else if (Keyboard::isKeyPressed(Keyboard::Right) && right == true)
-					{
-						placeShip(x, y, 1, 0, size, ship);
-						count++;
-						shipPlaceReset(x, y, size, shipName, ship, count);
-						part--;
-					}
-
-
-				}
 			}
-			else
-			{
-				events.push_back(event);
-			}
+
+			window.clear();
+			drawBoard(window);
+			gameInstructions.placingShips(window, shipName, size);
+			window.display();
 		}
-		
-		window.clear();
-		drawBoard(window);
-		gameInstructions.placingShips(window, shipName, size);
-		window.display();
 	}
 	x = 100;
 	y = 100;

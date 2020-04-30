@@ -2,11 +2,11 @@
 
 #include "GameState.h"
 #include "GameManager.h"
+#include <iostream>
 
 class PlayState : public GameState
 {
 private:
-	sf::Sprite sprite;
 public:
 	PlayState();
 	void onSwitch();

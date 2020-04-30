@@ -3,25 +3,19 @@
 
 
 
-void runGame()
+void runGame(sf::RenderWindow& window)
 {
-	srand(time(0));
-	LoadState loadState;
-	GameState* currentState = &loadState;
 	GameMenu labels;
 	Board gameBoard;
-	gameBoard.placeShips();
+	gameBoard.placeShips(window);
 	BoardAI gameBoardAI;
 	int x, y;
 	const int squareSize = 78.0f;
 	int phase = 0;
-	sf::RenderWindow window(sf::VideoMode(1600, 1000), "BattleShip");
 
 	while (window.isOpen())
 	{
 		sf::Event event;
-		std::vector<Event> events;
-		std::vector<SwitchFlags> switchFlags;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed || gameBoard.checkIfLost() == true || gameBoardAI.checkIfLost() == true)
@@ -52,10 +46,6 @@ void runGame()
 					choiceAI(x, y);
 					gameBoard.checkHit(x, y);
 				}
-			}
-			else
-			{
-				events.push_back(event);
 			}
 		}
 		const int squareSize = 78.0f;
