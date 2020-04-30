@@ -25,14 +25,15 @@ MainMenuState::MainMenuState()
 	selector.setOutlineColor(Color(169, 169, 169, 150));
 	selector.setFillColor(Color(0, 0, 0, 0));
 	selectorpos = 0;
+
+	// setup rules text
+	draw_rules = false;
+	init_rules();
 }
 
 // draws the entire rules tab
-void MainMenuState::rules(RenderWindow& window)
+void MainMenuState::init_rules()
 {
-	Text rulestext,
-		rulestitle,
-		rulesSubtitle;
 
 	rulestitle.setString("Rules");
 	rulestitle.setFont(font);
@@ -40,7 +41,6 @@ void MainMenuState::rules(RenderWindow& window)
 	rulestitle.setFillColor(Color(169, 169, 169, 255));
 	rulestitle.setStyle(Text::Bold);
 	rulestitle.setPosition(280.f, 0.f);
-	window.draw(rulestitle);
 
 	rulesSubtitle.setString("Objective:");
 	rulesSubtitle.setFont(font);
@@ -48,7 +48,6 @@ void MainMenuState::rules(RenderWindow& window)
 	rulesSubtitle.setFillColor(Color(169, 169, 169, 255));
 	rulesSubtitle.setStyle(Text::Bold);
 	rulesSubtitle.setPosition(10.f, 100.f);
-	window.draw(rulesSubtitle);
 
 	rulestext.setString("\nThe object of Battleship is to try and sink all of the \nother player's before they sink all of your ships.\n"
 		"All of the other player's ships are somewhere on \ntheir board. You try and hit them by clicking one of the \nsquares on the board.");
@@ -56,7 +55,6 @@ void MainMenuState::rules(RenderWindow& window)
 	rulestext.setCharacterSize(20);
 	rulestext.setFillColor(Color(169, 169, 169, 255));
 	rulestext.setPosition(10.f, 125.f);
-	window.draw(rulestext);
 
 	rulesSubtitle.setString("Starting the Game:");
 	rulesSubtitle.setFont(font);
@@ -64,7 +62,6 @@ void MainMenuState::rules(RenderWindow& window)
 	rulesSubtitle.setFillColor(Color(169, 169, 169, 255));
 	rulesSubtitle.setStyle(Text::Bold);
 	rulesSubtitle.setPosition(10.f, 350.f);
-	window.draw(rulesSubtitle);
 	
 	rulestext.setString("\nEach player places their 5 ships somewhere on their board.\n"
 		"The ships can only be placed vertically or horizontally. Diagonal placement\n"
@@ -76,24 +73,90 @@ void MainMenuState::rules(RenderWindow& window)
 	rulestext.setCharacterSize(20);
 	rulestext.setFillColor(Color(169, 169, 169, 255));
 	rulestext.setPosition(10.f, 375.f);
-	window.draw(rulestext);
 }
 
-void MainMenuState::onSwitch(std::vector<SwitchFlags>& flags)
+void MainMenuState::onSwitch()
 {
 
 }
 
 void MainMenuState::draw(sf::RenderWindow& window)
 {
-	window.draw(title);
-	window.draw(menu);
-	window.draw(selector);
+	if (draw_rules)
+	{
+		window.draw(rulestitle);
+		window.draw(rulesSubtitle);
+		window.draw(rulestext);
+		window.draw(rulesSubtitle);
+		window.draw(rulestext);
+	}
+	else
+	{
+		window.draw(title);
+		window.draw(menu);
+		window.draw(selector);
+	}
 }
 
-States MainMenuState::update(std::vector<sf::Event>& events, std::vector<SwitchFlags>& o_flags)
+States MainMenuState::update(std::vector<sf::Event>& events)
 {
-	// currently unimplemented!
+	for (size_t i = 0; i < events.size(); ++i)
+	{
+		if (events[i].type == Event::KeyPressed && !draw_rules)
+		{
+			// if user presses the down or up arrow,  change the value of the selector's position (grey box)
+			//	0 for play, 1 for rules and 2 for exit
+			if (Keyboard::isKeyPressed(Keyboard::Down) && selectorpos < 2)
+				++selectorpos;
+			if (Keyboard::isKeyPressed(Keyboard::Up) && selectorpos >= 0)
+				--selectorpos;
+		}
+	}
+	//  changes where the selector is drawn in the window as well as the size to fit around the words
+	switch (selectorpos)
+	{
+	case PLAY:
+		selector.setPosition(Vector2f(10, 165));
+		selector.setSize(Vector2f(105, 55));
+		break;
+	case RULES:
+		selector.setPosition(Vector2f(10, 222));
+		selector.setSize(Vector2f(130, 55));
+		break;
+	case EXIT:
+		selector.setPosition(Vector2f(10, 279));
+		selector.setSize(Vector2f(105, 55));
+		break;
+	}
+
+	// if enter is pressed it will go through the switch to find what the user selected using the selectorpos
+	if (Keyboard::isKeyPressed(Keyboard::Enter))
+	{
+		draw_rules = false;
+		switch (selectorpos)
+		{
+			//if play, the game will begin
+		case PLAY:
+			return States::PLAY;
+			break;
+			//if rules, the rules will be displayed
+		case RULES:
+			draw_rules = true;
+			break;
+			//if exit, the program will end and the window will close
+		case EXIT:
+			return States::QUIT;
+		}
+	}
+	else if (Keyboard::isKeyPressed(Keyboard::Escape))
+	{
+		switch (selectorpos)
+		{
+		case RULES:
+			draw_rules = false;
+			break;
+		}
+	}
 	return States::NO_CHANGE;
 }
 
