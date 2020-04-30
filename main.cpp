@@ -44,7 +44,7 @@ int main()
 	GameState* currentState = &menuState;
 
 	// create the window.
-	RenderWindow window(VideoMode(800, 800), "My Window");
+	RenderWindow window(VideoMode(1600, 1000), "My Window");
 	window.setVerticalSyncEnabled(true);     
 
 	while (window.isOpen())
