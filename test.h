@@ -4,7 +4,7 @@
 #include "GameManager.h"
 #include <iostream>
 #include <string>
-#include "main.cpp"
+using sf::RenderWindow;
 
 class testing
 {
