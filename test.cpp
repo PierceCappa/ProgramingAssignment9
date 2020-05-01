@@ -1,6 +1,6 @@
 #include "test.h"
 
-bool runTest(bool input, std::string&& name)
+bool testing::runTest(bool input, std::string&& name)
 {
 	static unsigned int test_counter = 0;
 
@@ -17,7 +17,7 @@ bool runTest(bool input, std::string&& name)
 	return input;
 }
 
-int testing::run()
+int testing::gameTest()
 {
 	bool success_state = 0;
 	success_state += !runTest(testGameManagerLoad(), "GameManager");
@@ -29,4 +29,9 @@ bool testing::testGameManagerLoad()
 	sf::Texture* tex = GameManager::getTexture("textures/test.png");
 
 	return tex != nullptr;
+}
+
+bool testing::testWindow(RenderWindow& window)
+{
+	return window.isOpen();
 }

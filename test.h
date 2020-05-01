@@ -4,13 +4,24 @@
 #include "GameManager.h"
 #include <iostream>
 #include <string>
+#include "main.cpp"
 
-namespace testing
+class testing
 {
+public:
 	// this will run all tests.
-	int run();
+	testing()
+	{
 
+	}
+	~testing()
+	{
+
+	}
+	int gameTest();
+	bool testWindow(RenderWindow& window);
 	bool testGameManagerLoad();
+	bool runTest(bool input, std::string&& name);
 	// add what tests you need here
 
-}
+};
